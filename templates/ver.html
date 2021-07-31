@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Temperaturas</title>
+	<script src="/static/echarts.min.js"></script>
+    <style>
+        #main{
+            position: relative;
+            width: 600px;
+            height: 400px;            
+            top: -320px;
+            left: 600px;
+        }
+      #tabla{
+        position: relative;
+        top:10px;
+        left: 100px;
+      }  
+    </style>
+
+</head>
+<body>
+	<div id="tabla">
+		<h1>IoT<br> Humedad y Temperatura</h1>
+		<table border="1">
+		<th>ID</th>
+		<th>Fecha</th>
+		<th>Humedad</th>
+		<th>Temperatura</th>
+		{% for temp in rv %}
+		<tr>
+			<td>{{temp[0]}}</td>		
+			<td>{{temp[1]}}</td>		
+			<td>{{temp[2]}}</td>		
+			<td>{{temp[3]}}</td>
+		</tr>
+		{% endfor %}
+
+		</table>
+	</div>
+<div id="main"></div>
+    <script type="text/javascript">
+            // Basado en el dom preparado, inicialice la instancia de echarts y dibuje el gráfico.
+            var myChart=echarts.init(document.getElementById('main'));
+            // Especifica los elementos de configuración y los datos del gráfico
+            var option = {
+                title: {
+                    text: 'Grafico'
+                },
+                dataZoom: [{
+                          type: 'slider',
+                          show: true, // flase oculta directamente los gráficos
+                          xAxisIndex: [0],
+                          left: '9%', // El porcentaje de la barra de desplazamiento a la izquierda
+                          bottom: -5,
+                          start: 10,// La posición inicial de la barra de desplazamiento
+                          end: 20 // La posición de corte de la barra de desplazamiento (divide la longitud del eje x del histograma proporcionalmente)
+                      }],
+                xAxis: {
+                    name:"Fecha",
+                    type: 'category',
+                    data:[
+                    		{% for temp in rv %}
+                            	"{{ temp[1]}}",
+                        	{% endfor %}
+                       ]},
+                yAxis: {
+                    name:"Temperatura",
+                    type: 'value',
+                    axisLabel : {
+                    formatter: '{value} '}
+                },
+                series: [
+                        {
+                            type: 'line',	// gráfico de líneas. gráfico de barras
+                            data:[{% for temp in rv %}
+                            		"{{ temp[3]}}",
+                        			{% endfor %}],
+                            itemStyle:{normal: {color:"#31b0d5"}}
+                        }
+                    ]
+                };
+            myChart.setOption(option);// Basado en el dom preparado, inicialice la instancia de echarts y dibuje el gráfico.
+     </script>
+
+</body>
+</html>
+
